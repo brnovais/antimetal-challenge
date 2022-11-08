@@ -22,7 +22,7 @@ To deploy the application I use Docker Compose, since it makes it easier to depl
 
 To make the process easy, I packed everything inside a container and used Docker Compose to run it.
 
-Please, refer to the infrastructure [README](../infra/README.md) for more information.
+Please, refer to the infrastructure [README](infra/README.md) for more information.
 
 This step can be improved by using CI/CD techniques.
 
@@ -30,7 +30,7 @@ This step can be improved by using CI/CD techniques.
 
 I deployed many different scripts during my tests. These deployments were manual, and a better approach would be to create an infrastructure using CI/CD that runs tests before prod deployments.
 
-Example scripts can be found in the CLI folder [README](../cli/README.md).
+Example scripts can be found in the CLI folder [README](cli/README.md).
 
 I had the intention to create unit tests for some parts of the code, but the time wasn’t enough and this wasn’t a requirement. But I want to point out the importance of automated tests, especially for back-end applications.
 
@@ -56,6 +56,6 @@ These orchestration engines usually provide an API endpoint to access its functi
 
 In the following image, we can see an architecture where the container engine is completely isolated from the rest of the infrastructure, adding a new layer of security and organization.
 
-![architecture](../infra/architecture.jpg).
+![architecture](infra/architecture.jpg).
 
 Also the back-end API as well as any database are isolated each in its own private sub-network.

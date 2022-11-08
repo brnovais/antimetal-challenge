@@ -80,13 +80,6 @@ import time
 time.sleep(1000)
 ```
 
-Endless Python code.
-
-```python
-import time
-time.sleep(1000)
-```
-
 Sensitive Python code.
 
 ```python
