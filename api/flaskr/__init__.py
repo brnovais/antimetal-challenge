@@ -93,4 +93,56 @@ def create_app():
 
         return jsonify({"id": container.id}), 200
 
+    @app.route("/list", methods=["GET"])
+    def list_scripts():
+        # Symbolic user authentication that's not secure. :}
+        user = extract_user(request)
+        if user is None:
+            return "Unauthorized", 401
+
+        # Create a new client to access the docker engine api.
+        client = docker.from_env()
+
+        filter = {}
+        if user != "admin":
+            # Any user other than the admin, we filter by its owner.
+            filter = {"label": "owner=" + user}
+
+        containers = client.containers.list(all=True, filters=filter)
+        return [c.id for c in containers], 200
+
+    @app.route("/get", methods=["GET"])
+    def get_script():
+        # Symbolic user authentication that's not secure. :}
+        user = extract_user(request)
+        if user is None:
+            return "Unauthorized", 401
+
+        # Get the container identifier.
+        id = request.args.get("id", type=str)
+        if id is None:
+            return "Invalid identifier", 400
+
+        # Create a new client to access the docker engine api.
+        client = docker.from_env()
+
+        # Get container information.
+        # Improve except when the id doesn't exist.
+        container = client.containers.get(id)
+
+        if container.labels["owner"] != user:
+            return "Unauthorized", 401
+
+        logs = container.logs().decode("utf-8")
+        return (
+            jsonify(
+                {
+                    "status": container.status,
+                    "exitcode": container.attrs["State"]["ExitCode"],
+                    "logs": logs,
+                }
+            ),
+            200,
+        )
+
     return app

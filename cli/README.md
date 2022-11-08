@@ -43,6 +43,22 @@ To deploy a script, the `deploy` command is used.
 node . deploy script.py -v 3.8
 ```
 
+## List
+
+To list my deployments, the `list` command is used.
+
+```sh
+node . list
+```
+
+## Get
+
+To get a specific deployment, the `get` command is used.
+
+```sh
+node . get 77ad17dff40fb984e89795091f1733314fd1354af03a35f9b302403d725997c5
+```
+
 ## Examples
 
 Simple Python code.
