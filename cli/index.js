@@ -2,6 +2,7 @@
 const axios = require("axios");
 const FormData = require("form-data");
 const fs = require("fs/promises");
+const https = require("https");
 const { program } = require("commander");
 
 const CREDENTIAL_FILE = ".credentials";
@@ -9,9 +10,9 @@ const CREDENTIAL_FILE = ".credentials";
 program
   .description("ANTIMETAL CLI")
   .version("0.1.0")
-  .option("-H, --host <string>", "api host address", "localhost")
-  .option("-P, --port <int>", "api host port", 5000)
-  .option("-S, --tls <bool>", "api protocol tls", false);
+  .option("-H, --host <string>", "api host address", "54.87.149.76")
+  .option("-P, --port <int>", "api host port", 443)
+  .option("-S, --tls <bool>", "api protocol tls", true);
 
 program
   .command("deploy")
@@ -47,7 +48,7 @@ async function deploy(workloadPath, options) {
   console.log(
     "This might take some time if the image has not been pulled before."
   );
-  console.log("We can optmize that with a async endpoint for pulling images.");
+  console.log("We can optmize that with an async endpoint for pulling images.");
   console.log("Sending request to run:", workloadPath);
   const response = await axios.post("/run", form, {
     baseURL: getBaseURL(),
@@ -57,6 +58,7 @@ async function deploy(workloadPath, options) {
     auth: {
       username,
     },
+    httpsAgent: getAgent(),
   });
 
   console.log("Running script with id:", response.data.id);
@@ -77,6 +79,7 @@ async function list() {
     auth: {
       username,
     },
+    httpsAgent: getAgent(),
   });
 
   console.log(username, "has", response.data.length, "deployments");
@@ -96,6 +99,7 @@ async function get(id) {
       auth: {
         username,
       },
+      httpsAgent: getAgent(),
     });
 
     console.log(
@@ -118,4 +122,14 @@ function getBaseURL() {
   const opts = program.opts();
   const protocol = opts.tls ? "https" : "http";
   return protocol + "://" + opts.host + ":" + opts.port;
+}
+
+function getAgent() {
+  return new https.Agent({
+    // This is a bad idea for production environments.
+    // For this challenge, I'm not using a domain name, so I don'
+    // have a valid certificate. I'm using a default on for the
+    // ubuntu instance IP address.
+    rejectUnauthorized: false,
+  });
 }

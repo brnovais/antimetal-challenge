@@ -1,0 +1,29 @@
+version: "3.9"
+
+services:
+  traefik:
+    image: traefik
+    restart: "always"
+    command:
+      - --entrypoints.web.address=:80
+      - --entrypoints.web.http.redirections.entryPoint.to=web-secure
+      - --entrypoints.web.http.redirections.entryPoint.scheme=https
+      - --entrypoints.web.http.redirections.entrypoint.permanent=true
+      - --entrypoints.web-secure.address=:443
+      - --providers.docker=true
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
+  antimetal:
+    image: antimetal
+    restart: "always"
+    labels:
+      - "traefik.http.routers.default.rule=HostRegexp(`{catchall:.*}`)"
+      - "traefik.http.routers.default.tls=true"
+    volumes:
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock

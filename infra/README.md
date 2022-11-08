@@ -45,3 +45,15 @@ Docker will be the base task runner for this challenge.
 Not all distributions share the same container engine and version, thus I prefer to use the official docker package with the latest version and additional plugins.
 
 https://docs.docker.com/engine/install/ubuntu/
+
+## API
+
+Information about running the API can be found [here](../api/README.md)
+
+## Docker Compose
+
+To use the `docker-compose.yml` file.
+
+```sh
+sudo docker compose up --detach
+```
