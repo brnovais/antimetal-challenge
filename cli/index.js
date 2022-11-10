@@ -120,7 +120,7 @@ async function get(id) {
 
 function getBaseURL() {
   const opts = program.opts();
-  const protocol = opts.tls ? "https" : "http";
+  const protocol = opts.tls === true ? "https" : "http";
   return protocol + "://" + opts.host + ":" + opts.port;
 }
 
